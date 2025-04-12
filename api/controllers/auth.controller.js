@@ -38,3 +38,47 @@ export const signin = async (req, res, next) => {
     next(error);
   }
 };
+
+// for GOOGLE
+
+export const google = async (req, res, next) => {
+  try {
+    // for sign in we already have password
+    const user = await User.findOne({ email: req.body.email });
+    if (user) {
+      const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
+      const { password, ...rest } = user._doc;
+      res
+        .cookie("access_token", token, { httpOnly: true })
+        .status(200)
+        .json(rest);
+    } else {
+      // In google it is not asking for password but for sign Up password is required
+
+      const generatePassword =
+        Math.random().toString(36).slice(-8) +
+        Math.random().toString(36).slice(-8); // we want to get last 8 digit from random number generated from 0-9 and A-Z, we done plus bcz we want 16 digit password which can be more secure
+      const hashedPassword = bcryptjs.hashSync(generatePassword, 10);
+
+      // we will get username as esha agar which is not connected, so we need to connect them. Convert in lower case and then connect them (vice - versa) and at last add some random numbers
+
+      const newUser = new User({
+        username:
+          req.body.name.split(" ").join("").toLowerCase() +
+          Math.random().toString(36).slice(-4),
+        email: req.body.email,
+        password: hashedPassword,
+        avatar: req.body.photo,
+      });
+      await newUser.save();
+      const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
+      const { password: pass, ...rest } = newUser._doc;
+      res
+        .cookie("access_token", token, { httpOnly: true })
+        .status(200)
+        .json(rest);
+    }
+  } catch (error) {
+    next(error);
+  }
+};
