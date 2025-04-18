@@ -15,8 +15,8 @@ export default function CreateListing() {
     address: "",
     regularPrice: 100,
     discountPrice: 0,
-    bathRooms: 1,
-    bedRooms: 1,
+    bathrooms: 1,
+    bedrooms: 1,
     furnished: false,
     parking: false,
     type: "rent",
@@ -130,6 +130,7 @@ export default function CreateListing() {
     try {
       if (formData.imageUrls.length < 1)
         return setError("You must upload atleast one image");
+      // by just adding + in beginning, we can convert string to number
       if (+formData.regularPrice < +formData.discountPrice)
         return setError("Discounted Price must be lower than regular price");
       setLoading(true);
@@ -257,9 +258,9 @@ export default function CreateListing() {
             <div className="flex items-center gap-2">
               <input
                 onChange={handleChange}
-                value={formData.bedRooms}
+                value={formData.bedrooms}
                 type="number"
-                id="bedRooms"
+                id="bedrooms"
                 min="1"
                 max="10"
                 required
@@ -270,9 +271,9 @@ export default function CreateListing() {
             <div className="flex items-center gap-2">
               <input
                 onChange={handleChange}
-                value={formData.bathRooms}
+                value={formData.bathrooms}
                 type="number"
-                id="bathRooms"
+                id="bathrooms"
                 min="1"
                 max="10"
                 required
@@ -363,8 +364,9 @@ export default function CreateListing() {
                 </button>
               </div>
             ))}
+
           <button
-            disabled={uploading || loading}
+            disabled={uploading || loading} // if loading or uploading is true on buttons like create listing and upload then disable submit form button
             className="p-3 bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
           >
             {loading ? "Listing..." : "Create Listing"}
