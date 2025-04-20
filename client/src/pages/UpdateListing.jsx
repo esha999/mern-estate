@@ -392,7 +392,7 @@ export default function CreateListing() {
             disabled={uploading || loading} // if loading or uploading is true on buttons like create listing and upload then disable submit form button
             className="p-3 bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
           >
-            {loading ? "Listing..." : "Update Listing"}
+            {loading ? "Updating..." : "Update Listing"}
           </button>
           {error && <p className="text-red-700 text-sm">{error}</p>}
         </div>
